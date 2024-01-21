@@ -1,3 +1,5 @@
+import { handleCommonErrors } from "./utils.ts";
+
 type Options = {
   apiUrl: string;
   authToken: string;
@@ -22,12 +24,23 @@ type SendProps = {
 export class JokRoomApi {
   constructor(private options: Options) {}
 
-  async sendEvents(
+  sendEvents(
     tenantKey: string,
     roomId: string,
-    props: SendProps
+    events: SendProps["events"]
   ): Promise<true> {
-    const url = `${this.options.apiUrl}/${tenantKey}/${roomId}/send`;
+    return this.send(tenantKey, roomId, { events });
+  }
+
+  async send(
+    tenantKey: string,
+    roomId: string,
+    props: SendProps,
+    persist?: boolean
+  ): Promise<true> {
+    const url = `${this.options.apiUrl}/${tenantKey}/${roomId}/send${
+      persist ? "?persist" : ""
+    }`;
 
     const res = await fetch(url, {
       method: "POST",
@@ -36,7 +49,13 @@ export class JokRoomApi {
         Authorization: `bearer ${this.options.authToken}`,
       },
       body: JSON.stringify(props),
-    }).then((x) => x.json());
+    }).then((x) => {
+      if (x.ok) {
+        return x.json();
+      }
+
+      return handleCommonErrors(x);
+    });
 
     return res;
   }
@@ -50,7 +69,13 @@ export class JokRoomApi {
         "Content-Type": "application/json",
         Authorization: `bearer ${this.options.authToken}`,
       },
-    }).then((x) => x.json());
+    }).then((x) => {
+      if (x.ok) {
+        return x.json();
+      }
+
+      return handleCommonErrors(x);
+    });
 
     return res;
   }
@@ -66,7 +91,13 @@ export class JokRoomApi {
         "Content-Type": "application/json",
         Authorization: `bearer ${this.options.authToken}`,
       },
-    }).then((x) => x.json());
+    }).then((x) => {
+      if (x.ok) {
+        return x.json();
+      }
+
+      return handleCommonErrors(x);
+    });
 
     return res;
   }
@@ -79,7 +110,13 @@ export class JokRoomApi {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((x) => x.json());
+    }).then((x) => {
+      if (x.ok) {
+        return x.json();
+      }
+
+      return handleCommonErrors(x);
+    });
 
     return res;
   }

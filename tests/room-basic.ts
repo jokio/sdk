@@ -8,20 +8,12 @@ const room = new JokRoomApi({
   authToken,
 });
 
-const res = await room.sendEvents("joker", "r1", {
-  action: {
-    userId: "",
-    sessionId: "",
-    data: {},
-    timestamp: new Date(),
-  },
-  events: [
-    {
-      data: {
-        hello: "there",
-      },
+const res = await room.sendEvents("joker", "r1", [
+  {
+    data: {
+      hello: "there",
     },
-  ],
-});
+  },
+]);
 
 console.log({ res });
