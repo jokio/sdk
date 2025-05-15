@@ -8,10 +8,31 @@
 
 <body>
     <h1>Library Test</h1>
+
+    <button onclick="playAudio()">Edge TTS</button>
+
+    <button onclick="playAudio2()">Voicevox TTS</button>
+
     <script type="module">
-        import { emailSignInRequest } from './dist/jokio.sdk.es.js';
-        document.body.innerHTML += `<p>${emailSignInRequest("World")}</p>`;
+        import { jok } from './dist/jokio.sdk.es.js';
+        window.jok = jok
+        jok.voicevoxTts.getVoices().then(console.log)
+        // document.body.innerHTML += `<p>${}</p>`;
+
+        window.playAudio = async function () {
+            const audio = await jok.edgeTts.getAudio("Hello there, how are you?", "en-US-AvaNeural")
+
+            audio.play()
+        }
+
+
+        window.playAudio2 = async function () {
+            const audio = await jok.voicevoxTts.getAudio("こんにちわ、おげんきですか？あなたはあたまがいいですね。", 3)
+
+            audio.play()
+        }
     </script>
+
 </body>
 
 </html>

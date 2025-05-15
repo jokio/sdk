@@ -5,11 +5,14 @@
   "module": "dist/jokio.sdk.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "vite",
+    "start": "npm run build && vite",
     "build": "vite build && tsc"
   },
   "devDependencies": {
-    "vite": "6.3.5",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vite": "6.3.5"
+  },
+  "dependencies": {
+    "@simplewebauthn/browser": "^13.1.0"
   }
 }
