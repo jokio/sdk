@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>MyLibrary Test</title>
+</head>
+
+<body>
+    <h1>Library Test</h1>
+    <script type="module">
+        import { emailSignInRequest } from './dist/jokio.sdk.es.js';
+        document.body.innerHTML += `<p>${emailSignInRequest("World")}</p>`;
+    </script>
+</body>
+
+</html>
