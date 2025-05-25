@@ -1,6 +1,10 @@
 import { AuthService } from './auth.service'
+import { CryptoService } from './crypto.service'
 import { EdgeTtsService } from './edgeTts.service'
+import { NatsService } from './nats.service'
 import { VoicevoxTtsService } from './tts.service'
+
+export { NatsService } from './nats.service'
 
 type Config = {
   debug: boolean
@@ -26,4 +30,8 @@ export const jok = {
   edgeTts: new EdgeTtsService(),
 
   voicevoxTts: new VoicevoxTtsService(defaultConfig),
+
+  nats: new NatsService(),
+
+  crypto: new CryptoService(),
 }

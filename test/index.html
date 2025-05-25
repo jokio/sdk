@@ -16,7 +16,7 @@
     <script type="module">
         import { jok } from './dist/jokio.sdk.es.js';
         window.jok = jok
-        jok.voicevoxTts.getVoices().then(console.log)
+        // jok.voicevoxTts.getVoices().then(console.log)
         // document.body.innerHTML += `<p>${}</p>`;
 
         window.playAudio = async function () {
@@ -30,6 +30,31 @@
             const audio = await jok.voicevoxTts.getAudio("こんにちわ、おげんきですか？あなたはあたまがいいですね。", 3)
 
             audio.play()
+        }
+
+
+        window.p2pChat = async function () {
+            const k1 = await jok.crypto.createSessionKeyPair()
+            const k2 = await jok.crypto.createSessionKeyPair()
+
+            const p1 = await jok.crypto.exportPublicKey(k1.publicKey)
+            const p2 = await jok.crypto.exportPublicKey(k2.publicKey)
+
+            console.log({ p1, p2 })
+
+            const shared1 = await jok.crypto.deriveAESKey(k1.privateKey, p2)
+            const shared2 = await jok.crypto.deriveAESKey(k2.privateKey, p1)
+
+            const originalText = "Hello World"
+
+            const encrypted = await jok.crypto.encrypt(originalText, shared1)
+            const decrypted = await jok.crypto.decrypt(encrypted, shared2)
+
+            console.log({
+                match: originalText === decrypted,
+                originalText,
+                decrypted,
+            })
         }
     </script>
 
