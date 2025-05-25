@@ -1,12 +1,15 @@
 {
   "name": "@jokio/sdk",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "dist/jokio.sdk.umd.js",
   "module": "dist/jokio.sdk.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "npm run build && vite",
     "build": "vite build && tsc"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "typescript": "5.8.3",
