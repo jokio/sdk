@@ -5,6 +5,11 @@ import {
   JSONCodec,
   type NatsConnection,
 } from 'nats.ws'
+import { AuthService } from './auth.service'
+
+type Config = {
+  natsUrl: string
+}
 
 const jsonCodec = JSONCodec()
 
@@ -22,17 +27,32 @@ export class NatsService<TApi> {
     resolve => (this.resolveConnected = resolve),
   )
 
+  constructor(private config: Config) {}
+
   async connect(
-    natsServerUrls: string[],
-    user: IdentityUser,
+    natsServerUrls?: string[],
+    user?: IdentityUser,
     prefix?: string,
   ) {
+    const finalNatsServerUrls = natsServerUrls ?? [
+      this.config.natsUrl,
+    ]
+
     this.nc = await connect({
-      servers: natsServerUrls,
+      servers: finalNatsServerUrls,
     })
 
-    this.userId = user.userId
-    this.sessionId = user.sessionId
+    const userInfo =
+      user ?? new AuthService({ authUrl: '' }).getLastLoginData()
+
+    if (!userInfo) {
+      throw new Error(
+        'Please authenticate first by calling `auth` apis',
+      )
+    }
+
+    this.userId = userInfo.userId
+    this.sessionId = userInfo.sessionId
 
     this.globalPrefix = prefix ?? ''
 
@@ -301,11 +321,7 @@ export class NatsService<TApi> {
   }
 }
 
-export const nats = new NatsService()
-
 type IdentityUser = {
-  jwt: string
-  seed: string
   userId: string
   sessionId: string
 }

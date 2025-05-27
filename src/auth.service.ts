@@ -7,13 +7,15 @@ type Config = {
   authUrl: string
 }
 
+const USER_STORAGE_KEY = 'LAST_AUTH_DATA'
+
 export class AuthService {
-  constructor(private config: Config) { }
+  constructor(private config: Config) {}
 
   async requestEmailLogin(email: string, returnUrl: string) {
     const res = await fetch(
       this.config.authUrl +
-      `/email-verification-request/${email}?returnUrl=${returnUrl}`,
+        `/email-verification-request/${email}?returnUrl=${returnUrl}`,
       { credentials: 'include' },
     ).then(processResponse)
 
@@ -23,9 +25,11 @@ export class AuthService {
   async completeEmailLogin(email: string, otpCode: string) {
     const res = await fetch(
       this.config.authUrl +
-      `/email-verification-complete/${email}/${otpCode}`,
+        `/email-verification-complete/${email}/${otpCode}`,
       { credentials: 'include' },
     ).then(processResponse)
+
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res))
 
     return res as IdentityUser
   }
@@ -38,8 +42,9 @@ export class AuthService {
     // 1. get challenge options
     const opts = await fetch(
       this.config.authUrl +
-      `/webauth-challenge-request?registration=${isRegistration ? 'true' : ''
-      }&displayName=${displayName}`,
+        `/webauth-challenge-request?registration=${
+          isRegistration ? 'true' : ''
+        }&displayName=${displayName}`,
       { credentials: 'include' },
     ).then(processResponse)
 
@@ -66,8 +71,9 @@ export class AuthService {
     // 3. verify response
     const res = await fetch(
       this.config.authUrl +
-      `/webauth-challenge-complete?displayName=${displayName}&addAsAdditionalDevice=${addAsAdditionalDevice ? 'true' : ''
-      }`,
+        `/webauth-challenge-complete?displayName=${displayName}&addAsAdditionalDevice=${
+          addAsAdditionalDevice ? 'true' : ''
+        }`,
       {
         method: 'POST',
         body: JSON.stringify(attResp),
@@ -78,16 +84,38 @@ export class AuthService {
       },
     ).then(processResponse)
 
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res))
+
     return res as IdentityUser
   }
 
-  async signOut() {
-    // 1. get challenge options
+  async guestSignIn() {
     const res = await fetch(this.config.authUrl + `/sign-out`, {
       credentials: 'include',
     }).then(processResponse)
 
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res))
+
     return res as IdentityUser
+  }
+
+  async clearLoginData() {
+    localStorage.removeItem(USER_STORAGE_KEY)
+  }
+
+  getLastLoginData() {
+    const s = localStorage.getItem(USER_STORAGE_KEY)
+    if (!s) {
+      return null
+    }
+
+    try {
+      const res = JSON.parse(s)
+
+      return res || null
+    } catch {
+      return null
+    }
   }
 }
 

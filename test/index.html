@@ -14,10 +14,16 @@
     <button onclick="playAudio2()">Voicevox TTS</button>
 
     <script type="module">
+        // import { jok } from 'https://esm.run/@jokio/sdk';
         import { jok } from './dist/jokio.sdk.es.js';
+
         window.jok = jok
-        // jok.voicevoxTts.getVoices().then(console.log)
-        // document.body.innerHTML += `<p>${}</p>`;
+
+        window.getVoices = async function () {
+            const voices = await jok.voicevoxTts.getVoices()
+
+            console.log(voices)
+        }
 
         window.playAudio = async function () {
             const audio = await jok.edgeTts.getAudio("Hello there, how are you?", "en-US-AvaNeural")
@@ -25,13 +31,46 @@
             audio.play()
         }
 
-
         window.playAudio2 = async function () {
             const audio = await jok.voicevoxTts.getAudio("こんにちわ、おげんきですか？あなたはあたまがいいですね。", 3)
 
             audio.play()
         }
 
+        window.requestEmailLogin = async function (email) {
+            const res = await jok.auth.requestEmailLogin(email, 'https://localhost:5173')
+
+            return res
+        }
+
+        window.completeEmailLogin = async function (email, otpCode) {
+            const res = await jok.auth.completeEmailLogin(email, otpCode)
+
+            return res
+        }
+
+        window.passkeyLogin = async function (displayName) {
+            const res = await jok.auth.requestPasskeyLogin(displayName)
+
+            return res
+        }
+
+        window.natsConnect = async function () {
+            await jok.nats.connect()
+        }
+
+        window.natsSubscribe = async function () {
+            await jok.nats.on('test', (data, ctx) => {
+                console.log(data, ctx)
+                return { i: 1, b: true }
+            })
+        }
+
+        window.natsCall = async function () {
+            const res = await jok.nats.call('test', { name: 'User', age: 11 })
+
+            console.log(res)
+        }
 
         window.p2pChat = async function () {
             const k1 = await jok.crypto.createSessionKeyPair()
