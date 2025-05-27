@@ -29,12 +29,14 @@ export class NatsService<TApi> {
 
   constructor(private config: Config) {}
 
-  async connect(
-    natsServerUrls?: string[],
-    user?: IdentityUser,
-    prefix?: string,
-  ) {
-    const finalNatsServerUrls = natsServerUrls ?? [
+  async connect(opts: {
+    natsWsServerUrls?: string[]
+    user?: IdentityUser
+    prefix?: string
+  }) {
+    const { natsWsServerUrls, user, prefix } = opts
+
+    const finalNatsServerUrls = natsWsServerUrls ?? [
       this.config.natsUrl,
     ]
 
@@ -217,6 +219,9 @@ export class NatsService<TApi> {
     return () => subscription.unsubscribe()
   }
 
+  /**
+   * Reqiores permission to publish response in `_INBOX.>`. If you need to just listen events, use `on`.
+   */
   async handler<TSubject extends keyof TApi & string>(
     subject: TSubject,
     cb: (
@@ -269,33 +274,33 @@ export class NatsService<TApi> {
 
           const decodedMessage = jsonCodec.decode(message.data)
 
-          cb(decodedMessage as any, {
-            subject,
-            userId,
-            sessionId,
-          })
-            .then(res => {
-              if (message.reply) {
-                message.respond(
-                  jsonCodec.encode({
-                    ok: true,
-                    data: res,
-                  }),
-                )
-              }
+          try {
+            const res = await cb(decodedMessage as any, {
+              subject,
+              userId,
+              sessionId,
             })
-            .catch(err => {
-              console.error('[nats] handle', err)
 
-              if (message.reply) {
-                message.respond(
-                  jsonCodec.encode({
-                    ok: false,
-                    message: err.message,
-                  }),
-                )
-              }
-            })
+            if (message.reply) {
+              message.respond(
+                jsonCodec.encode({
+                  ok: true,
+                  data: res,
+                }),
+              )
+            }
+          } catch (err: any) {
+            console.error('[nats] handle', err)
+
+            if (message.reply) {
+              message.respond(
+                jsonCodec.encode({
+                  ok: false,
+                  message: err.message,
+                }),
+              )
+            }
+          }
         } catch (err: any) {
           console.error('[nats] handle', err)
 

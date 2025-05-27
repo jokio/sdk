@@ -9,13 +9,12 @@
 <body>
     <h1>Library Test</h1>
 
-    <button onclick="playAudio()">Edge TTS</button>
-
+    <button onclick="playAudio()">TTS</button>
     <button onclick="playAudio2()">Voicevox TTS</button>
 
     <script type="module">
         // import { jok } from 'https://esm.run/@jokio/sdk';
-        import { jok } from './dist/jokio.sdk.es.js';
+        import { jok, VoicevoxTtsService } from './dist/jokio.sdk.es.js';
 
         window.jok = jok
 
@@ -38,7 +37,9 @@
         }
 
         window.playAudio2 = async function () {
-            const audio = await jok.voicevoxTts.getAudio("こんにちわ、おげんきですか？あなたはあたまがいいですね。", 3)
+            const tts = new VoicevoxTtsService({ voicevoxUrl: 'https://voicevox.fly.dev' })
+
+            const audio = await tts.getAudio("こんにちわ、おげんきですか？あなたはあたまがいいですね。", 3)
 
             audio.play()
         }
@@ -66,16 +67,13 @@
         }
 
         window.natsSubscribe = async function () {
-            await jok.nats.on('test', (data, ctx) => {
-                console.log(data, ctx)
-                return { i: 1, b: true }
+            await jok.nats.on('dev.test', (data, ctx) => {
+                console.lg({ data, ctx })
             })
         }
 
-        window.natsCall = async function () {
-            const res = await jok.nats.call('test', { name: 'User', age: 11 })
-
-            console.log(res)
+        window.natsPublish = async function () {
+            await jok.nats.publish('dev.test', { name: 'User', age: 11 })
         }
 
         window.p2pChat = async function () {
