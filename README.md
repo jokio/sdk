@@ -16,6 +16,12 @@ import { jok } from '@jokio/sdk'
 
 // passkeys
 {
+  // login with existing keys
+  const userData = await jok.auth.requestPasskeyLogin()
+}
+
+{
+  // registration / login
   const userData = await jok.auth.requestPasskeyLogin(displayName)
 }
 
