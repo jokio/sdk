@@ -77,16 +77,16 @@
         }
 
         window.p2pChat = async function () {
-            const k1 = await jok.crypto.createSessionKeyPair()
-            const k2 = await jok.crypto.createSessionKeyPair()
+            const kp1 = await jok.crypto.createSessionKeyPair()
+            const kp2 = await jok.crypto.createSessionKeyPair()
 
-            const p1 = await jok.crypto.exportPublicKey(k1.publicKey)
-            const p2 = await jok.crypto.exportPublicKey(k2.publicKey)
+            const p1 = await jok.crypto.exportPublicKey(kp1.publicKey)
+            const p2 = await jok.crypto.exportPublicKey(kp2.publicKey)
 
             console.log({ p1, p2 })
 
-            const shared1 = await jok.crypto.deriveAESKey(k1.privateKey, p2)
-            const shared2 = await jok.crypto.deriveAESKey(k2.privateKey, p1)
+            const shared1 = await jok.crypto.deriveAESKey(kp1.privateKey, p2)
+            const shared2 = await jok.crypto.deriveAESKey(kp2.privateKey, p1)
 
             const originalText = "Hello World"
 

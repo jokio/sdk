@@ -12,7 +12,10 @@ const USER_STORAGE_KEY = 'LAST_AUTH_DATA'
 export class AuthService {
   constructor(private config: Config) {}
 
-  async requestEmailLogin(email: string, returnUrl: string) {
+  async requestEmailLogin(
+    email: string,
+    returnUrl: string = location.href,
+  ) {
     const res = await fetch(
       this.config.authUrl +
         `/email-verification-request/${email}?returnUrl=${returnUrl}`,
