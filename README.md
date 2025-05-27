@@ -55,7 +55,7 @@ Between users (browsers), using nats
 ```ts
 import { jok } from '@jokio/sdk'
 
-// Authentication should be done first, before calling `jok.nats.connect`
+// Authentication should be done first
 
 await jok.nats.connect()
 
