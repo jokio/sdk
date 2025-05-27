@@ -119,20 +119,21 @@ console.log({
 
 ## Directly in HTML
 
+You can use directly into html as well:
+
 ```html
 <script type="module">
   import { jok } from 'https://esm.run/@jokio/sdk'
 
-  function passkeyLogin() {
-    try {
-      const userData = await jok.auth.completeEmailLogin(email, otpCode)
+  function textToAudio() {
+    const audio = await jok.tts.getAudio(
+      'Hello there, how are you?',
+      'en-US-AvaNeural',
+    )
 
-      return userData
-    } catch (err) {
-      alert(err.message)
-
-      return null
-    }
+    audio.play()
   }
+
+  window.textToAudio = textToAudio
 </script>
 ```
