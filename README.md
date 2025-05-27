@@ -66,7 +66,7 @@ import { jok } from '@jokio/sdk'
 await jok.nats.connect()
 
 await jok.nats.on('dev.test', (data, ctx) => {
-  // in `ctx` you will see caller's userId and sessionId
+  // in `ctx` you will receive caller's userId and sessionId
   console.log('Received event', data, ctx)
 })
 
