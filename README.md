@@ -5,7 +5,7 @@
 [![npm license](https://img.shields.io/npm/l/@jokio/sdk.svg)](https://www.npmjs.com/package/@jokio/sdk)
 
 SDK for building decentralised localfirst web apps.
-Provides tts ai model integrations, realtime p2p communication & crypto encryptions.
+Provides authentication (guest, passkeys, email), tts ai model integrations, realtime communication & crypto encryptions.
 
 # Examples
 
