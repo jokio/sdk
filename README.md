@@ -17,12 +17,13 @@ import { jok } from '@jokio/sdk'
 // passkeys
 {
   // login with existing keys
-  const userData = await jok.auth.requestPasskeyLogin()
-}
+  await jok.auth.requestPasskeyLogin()
 
-{
-  // registration / login
-  const userData = await jok.auth.requestPasskeyLogin(displayName)
+  // registration
+  await jok.auth.requestPasskeyLogin(displayName)
+
+  // login attempt with a specific displayName
+  await jok.auth.requestPasskeyLogin(displayName, false)
 }
 
 // email

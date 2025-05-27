@@ -39,13 +39,14 @@ export class AuthService {
 
   async requestPasskeyLogin(
     displayName: string = '',
+    isRegistration: boolean = !!displayName,
     addAsAdditionalDevice = false,
   ) {
     // 1. get challenge options
     const opts = await fetch(
       this.config.authUrl +
         `/webauth-challenge-request?registration=${
-          !!displayName ? 'true' : ''
+          isRegistration ? 'true' : ''
         }&displayName=${displayName}`,
       { credentials: 'include' },
     ).then(processResponse)
