@@ -1,9 +1,20 @@
 {
   "name": "@jokio/sdk",
-  "description": "pure js sdk for building decentralised localfirst web apps. Provides tts ai model integrations, realtime p2p communication & crypto encryptions.",
-  "version": "0.0.4",
+  "description": "pure js/ts sdk for building decentralised localfirst web apps. Provides tts ai model integrations, realtime p2p communication & crypto encryptions.",
+  "version": "0.0.5",
   "license": "MIT",
   "main": "dist/jokio.sdk.umd.js",
+  "keywords": [
+    "decentralised",
+    "localfirst",
+    "tts",
+    "p2p",
+    "crypto",
+    "ai",
+    "realtime",
+    "communication",
+    "auth"
+  ],
   "module": "dist/jokio.sdk.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
