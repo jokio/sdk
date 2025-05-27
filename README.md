@@ -125,7 +125,7 @@ You can use directly into html as well:
 <script type="module">
   import { jok } from 'https://esm.run/@jokio/sdk'
 
-  function textToAudio() {
+  async function textToAudio() {
     const audio = await jok.tts.getAudio(
       'Hello there, how are you?',
       'en-US-AvaNeural',
