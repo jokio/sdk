@@ -68,7 +68,7 @@
 
         window.natsSubscribe = async function () {
             await jok.nats.on('dev.test', (data, ctx) => {
-                console.lg({ data, ctx })
+                console.log({ data, ctx })
             })
         }
 

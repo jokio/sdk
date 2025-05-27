@@ -29,11 +29,13 @@ export class NatsService<TApi> {
 
   constructor(private config: Config) {}
 
-  async connect(opts: {
-    natsWsServerUrls?: string[]
-    user?: IdentityUser
-    prefix?: string
-  }) {
+  async connect(
+    opts: {
+      natsWsServerUrls?: string[]
+      user?: IdentityUser
+      prefix?: string
+    } = {},
+  ) {
     const { natsWsServerUrls, user, prefix } = opts
 
     const finalNatsServerUrls = natsWsServerUrls ?? [

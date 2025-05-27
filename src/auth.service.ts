@@ -38,12 +38,20 @@ export class AuthService {
   }
 
   async requestPasskeyLogin(
-    displayName: string = '',
-    isRegistration: boolean = !!displayName,
-    addAsAdditionalDevice = false,
+    opts: {
+      displayName?: string
+      isRegistration?: boolean
+      addAsAdditionalDevice?: boolean
+    } = {},
   ) {
+    const {
+      displayName = '',
+      isRegistration = false,
+      addAsAdditionalDevice = false,
+    } = opts
+
     // 1. get challenge options
-    const opts = await fetch(
+    const passkeyOpts = await fetch(
       this.config.authUrl +
         `/webauth-challenge-request?registration=${
           isRegistration ? 'true' : ''
@@ -54,10 +62,14 @@ export class AuthService {
     // 2. ask user to register
     let attResp
     try {
-      if (!opts.user?.id) {
-        attResp = await startAuthentication({ optionsJSON: opts })
+      if (!passkeyOpts.user?.id) {
+        attResp = await startAuthentication({
+          optionsJSON: passkeyOpts,
+        })
       } else {
-        attResp = await startRegistration({ optionsJSON: opts })
+        attResp = await startRegistration({
+          optionsJSON: passkeyOpts,
+        })
       }
     } catch (error: any) {
       if (error.name === 'InvalidStateError') {
@@ -92,7 +104,7 @@ export class AuthService {
     return res as IdentityUser
   }
 
-  async guestSignIn() {
+  async guestLogin() {
     const res = await fetch(this.config.authUrl + `/sign-out`, {
       credentials: 'include',
     }).then(processResponse)
