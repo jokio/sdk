@@ -19,14 +19,20 @@
 
         window.jok = jok
 
-        window.getVoices = async function () {
+        window.getVoicevoxVoices = async function () {
             const voices = await jok.voicevoxTts.getVoices()
 
             console.log(voices)
         }
 
+        window.getVoices = async function () {
+            const voices = await jok.tts.getVoices()
+
+            console.log(voices)
+        }
+
         window.playAudio = async function () {
-            const audio = await jok.edgeTts.getAudio("Hello there, how are you?", "en-US-AvaNeural")
+            const audio = await jok.tts.getAudio("Hello there, how are you?", "en-US-AvaNeural")
 
             audio.play()
         }
