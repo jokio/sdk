@@ -15,19 +15,17 @@ Provides tts ai model integrations, realtime p2p communication & crypto encrypti
 import { jok } from '@jokio/sdk'
 
 // passkeys
-const userData = await jok.auth.requestPasskeyLogin(displayName)
-
-return userData
+{
+  const userData = await jok.auth.requestPasskeyLogin(displayName)
+}
 
 // email - request otp code
-const isSent = await jok.auth.requestEmailLogin(email)
+{
+  const isSent = await jok.auth.requestEmailLogin(email)
 
-return isSent
-
-// email - complete process
-const userData = await jok.auth.completeEmailLogin(email, otpCode)
-
-return userData
+  // email - complete process
+  const userData = await jok.auth.completeEmailLogin(email, otpCode)
+}
 ```
 
 ## Text to speech (TTS)
