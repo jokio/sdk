@@ -9,7 +9,7 @@ Provides tts ai model integrations, realtime p2p communication & crypto encrypti
 
 # Examples
 
-## Auth
+## Authentication
 
 ```ts
 import { jok } from '@jokio/sdk'
@@ -19,11 +19,12 @@ import { jok } from '@jokio/sdk'
   const userData = await jok.auth.requestPasskeyLogin(displayName)
 }
 
-// email - request otp code
+// email
 {
+  // 1. request otp code
   const isSent = await jok.auth.requestEmailLogin(email)
 
-  // email - complete process
+  // 2. complete process
   const userData = await jok.auth.completeEmailLogin(email, otpCode)
 }
 ```
