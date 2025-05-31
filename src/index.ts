@@ -3,6 +3,7 @@ import { CryptoService } from './crypto.service'
 import { NatsService } from './nats.service'
 import { EdgeTtsService } from './tts.service'
 
+export { type IdentityUser } from './auth.service'
 export { NatsService } from './nats.service'
 export { VoicevoxTtsService } from './voicevoxTts'
 
