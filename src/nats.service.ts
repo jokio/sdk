@@ -9,6 +9,7 @@ import { AuthService } from './auth.service'
 
 type Config = {
   natsUrl: string
+  auth: AuthService
 }
 
 const jsonCodec = JSONCodec()
@@ -26,6 +27,10 @@ export class NatsService<TApi> {
   isConnected = new Promise(
     resolve => (this.resolveConnected = resolve),
   )
+
+  get url() {
+    return this.config.natsUrl
+  }
 
   constructor(private config: Config) {}
 
@@ -46,9 +51,7 @@ export class NatsService<TApi> {
       servers: finalNatsServerUrls,
     })
 
-    const userInfo =
-      user ?? new AuthService({ authUrl: '' }).getLastLoginData()
-
+    const userInfo = user ?? this.config.auth.getLastLoginData()
     if (!userInfo) {
       throw new Error(
         'Please authenticate first by calling `auth` apis',

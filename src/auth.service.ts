@@ -2,22 +2,28 @@ import {
   startAuthentication,
   startRegistration,
 } from '@simplewebauthn/browser'
+import { StorageService } from './storage.service'
 
-type Config = {
+type Options = {
   authUrl: string
+  storage: StorageService
 }
 
 const USER_STORAGE_KEY = 'LAST_AUTH_DATA'
 
 export class AuthService {
-  constructor(private config: Config) {}
+  get url() {
+    return this.options.authUrl
+  }
+
+  constructor(private options: Options) {}
 
   async requestEmailLogin(
     email: string,
     returnUrl: string = location.href,
   ) {
     const res = await fetch(
-      this.config.authUrl +
+      this.options.authUrl +
         `/email-verification-request/${email}?returnUrl=${returnUrl}`,
       { credentials: 'include' },
     ).then(processResponse)
@@ -27,12 +33,12 @@ export class AuthService {
 
   async completeEmailLogin(email: string, otpCode: string) {
     const res = await fetch(
-      this.config.authUrl +
+      this.options.authUrl +
         `/email-verification-complete/${email}/${otpCode}`,
       { credentials: 'include' },
     ).then(processResponse)
 
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res))
+    await this.options.storage.setItem(USER_STORAGE_KEY, res)
 
     return res as IdentityUser
   }
@@ -52,7 +58,7 @@ export class AuthService {
 
     // 1. get challenge options
     const passkeyOpts = await fetch(
-      this.config.authUrl +
+      this.options.authUrl +
         `/webauth-challenge-request?registration=${
           isRegistration ? 'true' : ''
         }&displayName=${displayName}`,
@@ -85,7 +91,7 @@ export class AuthService {
 
     // 3. verify response
     const res = await fetch(
-      this.config.authUrl +
+      this.options.authUrl +
         `/webauth-challenge-complete?displayName=${displayName}&addAsAdditionalDevice=${
           addAsAdditionalDevice ? 'true' : ''
         }`,
@@ -99,23 +105,23 @@ export class AuthService {
       },
     ).then(processResponse)
 
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res))
+    await this.options.storage.setItem(USER_STORAGE_KEY, res)
 
     return res as IdentityUser
   }
 
   async guestLogin() {
-    const res = await fetch(this.config.authUrl + `/sign-out`, {
+    const res = await fetch(this.options.authUrl + `/sign-out`, {
       credentials: 'include',
     }).then(processResponse)
 
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res))
+    await this.options.storage.setItem(USER_STORAGE_KEY, res)
 
     return res as IdentityUser
   }
 
   async clearLoginData() {
-    localStorage.removeItem(USER_STORAGE_KEY)
+    await this.options.storage.removeItem(USER_STORAGE_KEY)
   }
 
   getLastLoginData() {
