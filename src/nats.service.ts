@@ -51,7 +51,8 @@ export class NatsService<TApi> {
       servers: finalNatsServerUrls,
     })
 
-    const userInfo = user ?? this.config.auth.getLastLoginData()
+    const userInfo =
+      user ?? (await this.config.auth.getLastLoginData())
     if (!userInfo) {
       throw new Error(
         'Please authenticate first by calling `auth` apis',

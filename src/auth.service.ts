@@ -125,18 +125,9 @@ export class AuthService {
   }
 
   getLastLoginData() {
-    const s = localStorage.getItem(USER_STORAGE_KEY)
-    if (!s) {
-      return null
-    }
-
-    try {
-      const res = JSON.parse(s)
-
-      return res || null
-    } catch {
-      return null
-    }
+    return this.options.storage.getItem<IdentityUser>(
+      USER_STORAGE_KEY,
+    )
   }
 }
 
