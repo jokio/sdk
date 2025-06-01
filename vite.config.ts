@@ -2,9 +2,14 @@ import path from 'path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  publicDir: "test",
+  resolve: {
+    alias: {
+      crypto: 'false',
+    },
+  },
+  publicDir: 'test',
   server: {
-    open: '/index.html' // or 'test/index.html' if kept in /test
+    open: '/index.html', // or 'test/index.html' if kept in /test
   },
   build: {
     lib: {
