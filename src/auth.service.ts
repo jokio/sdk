@@ -16,7 +16,43 @@ export class AuthService {
     return this.options.authUrl
   }
 
-  constructor(private options: Options) {}
+  onUserDataUpdate?: (data: UserAuthData) => void
+
+  isAuthenticated: Promise<void>
+  private isAuthenticatedResolver: () => void = () => {}
+
+  constructor(private options: Options) {
+    this.isAuthenticated = new Promise<void>(
+      resolve => (this.isAuthenticatedResolver = resolve),
+    )
+  }
+
+  async init() {
+    const savedData = localStorage.getItem(USER_STORAGE_KEY)
+    if (savedData) {
+      try {
+        const userData = JSON.parse(savedData)
+
+        this.onUserDataUpdate?.(userData)
+
+        this.isAuthenticatedResolver()
+      } catch (err) {}
+    } else {
+      const userData = await this.me()
+
+      this.onUserDataUpdate?.(userData)
+
+      this.isAuthenticatedResolver()
+    }
+  }
+
+  async me() {
+    const data = await fetch(this.options.authUrl + '/me', {
+      credentials: 'include',
+    }).then(x => x.json())
+
+    return data as UserAuthData
+  }
 
   async requestEmailLogin(
     email: string,
@@ -40,7 +76,9 @@ export class AuthService {
 
     await this.options.storage.setItem(USER_STORAGE_KEY, res)
 
-    return res as IdentityUser
+    this.onUserDataUpdate?.(res)
+
+    return res as UserAuthData
   }
 
   async requestPasskeyLogin(
@@ -107,7 +145,9 @@ export class AuthService {
 
     await this.options.storage.setItem(USER_STORAGE_KEY, res)
 
-    return res as IdentityUser
+    this.onUserDataUpdate?.(res)
+
+    return res as UserAuthData
   }
 
   async guestLogin() {
@@ -117,26 +157,39 @@ export class AuthService {
 
     await this.options.storage.setItem(USER_STORAGE_KEY, res)
 
-    return res as IdentityUser
-  }
+    this.onUserDataUpdate?.(res)
 
-  async clearLoginData() {
-    await this.options.storage.removeItem(USER_STORAGE_KEY)
+    return res as UserAuthData
   }
 
   getLastLoginData() {
-    return this.options.storage.getItem<IdentityUser>(
+    return this.options.storage.getItem<UserAuthData>(
       USER_STORAGE_KEY,
     )
   }
 }
 
-export type IdentityUser = {
+export type UserAuthData = {
   name: string
   email: string
   userId: string
   sessionId: string
   verified: boolean
+
+  nats: {
+    bearer_token: boolean
+    pub: {
+      allow: string[]
+    }
+    sub: {
+      allow: string[]
+    }
+    limits: {
+      max_msgs: number
+      max_bytes: number
+      max_msgs_per_subject: number
+    }
+  }
 }
 const processResponse = async (x: Response) => {
   const data = await x.json()

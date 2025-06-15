@@ -4,7 +4,7 @@ import { NatsService } from './nats.service'
 import { StorageService } from './storage.service'
 import { EdgeTtsService } from './tts.service'
 
-export { type IdentityUser } from './auth.service'
+export { type UserAuthData } from './auth.service'
 export { NatsService } from './nats.service'
 export { VoicevoxTtsService } from './voicevoxTts'
 
