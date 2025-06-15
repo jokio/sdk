@@ -28,10 +28,14 @@ const auth = new AuthService(defaultConfig)
 export const jok = {
   setup(config: Partial<Config>) {
     if (config.authUrl || config.storage) {
+      const oldUserDataUpdate = this.auth.onUserDataUpdate
+
       this.auth = new AuthService({
         authUrl: config.authUrl ?? this.auth.url,
         storage: config.storage ?? this.storage,
       })
+
+      this.auth.onUserDataUpdate = oldUserDataUpdate
     }
 
     if (config.natsUrl || config.storage) {
