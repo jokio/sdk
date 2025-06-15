@@ -40,6 +40,8 @@ export class AuthService {
     } else {
       const userData = await this.me()
 
+      await this.options.storage.setItem(USER_STORAGE_KEY, userData)
+
       this.onUserDataUpdate?.(userData)
 
       this.isAuthenticatedResolver()
