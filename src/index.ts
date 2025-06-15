@@ -19,7 +19,7 @@ type Config = {
 const defaultConfig: Config = {
   debug: false,
   authUrl: 'https://auth.jok.io',
-  natsUrl: 'https://natsx.jok.io',
+  natsUrl: 'https://nats.jok.io',
   storage: new StorageService(),
 }
 
